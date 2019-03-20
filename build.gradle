@@ -43,8 +43,8 @@ if (System.env.TRAVIS_TAG != null && !System.env.TRAVIS_TAG.isEmpty()) {
     ext.config.build_number = System.env.TRAVIS_TAG.substring(0, System.env.TRAVIS_TAG.length()-1)
     ext.config.build_type = System.env.TRAVIS_TAG.substring(System.env.TRAVIS_TAG.length()-1)
 } else {
-    ext.config.build_number = "1.5"
-    ext.config.build_type = "r"
+    ext.config.build_number = config.core_build_version
+    ext.config.build_type = config.core_build_type
 }
 
 // Apply Plugins
@@ -64,8 +64,7 @@ minecraft {
 
 // Setup Deps
 dependencies {
-    testCompile "junit:junit:4.11"
-    testCompile project(":MyEssentials-TestSuite")    
+ 
 
     // Database engines
     compile "org.xerial:sqlite-jdbc:3.8.5-pre1"
@@ -98,12 +97,7 @@ processResources {
     //}
 }
 
-// Tests
-task testSuite(type: Test) {
-    include '**/MECTestSuite.class'
-    reports.junitXml.destination = "$buildDir/test-results/suite"
-    reports.html.destination = "$buildDir/test-results/suit"
-}
+
 
 // Modify jar. Generate custom manifest
 jar {
@@ -116,10 +110,4 @@ jar {
     }
 }
 
-// Setup Curse Upload task
-curse {
-    apiKey = System.env.CURSEFORGEKEY
-    projectId = config.project_id
-    changelog = "" // TODO Add changelog support
-    releaseType = config.build_type.equals('a') ? "alpha" : (config.build_type.equals('b') ? "beta" : "release")
-}
+

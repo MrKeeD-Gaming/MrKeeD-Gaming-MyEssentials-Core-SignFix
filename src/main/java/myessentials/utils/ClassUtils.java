@@ -2,10 +2,9 @@ package myessentials.utils;
 
 import net.minecraft.server.MinecraftServer;
 
+import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.List;
 
 /**
  * All utilities exclusively for classes go here
@@ -32,16 +31,16 @@ public class ClassUtils {
         return MinecraftServer.getServer().getServerModName().contains("cauldron") || MinecraftServer.getServer().getServerModName().contains("mcpc");
     }
 
-    public static Collection<Class<?>> getAllInterfaces(Class<?> cls) {
-    	Set<Class<?>> interfaces = new HashSet<Class<?>>();
-    	
-    	interfaces.addAll(Arrays.asList(cls.getInterfaces()));
+    public static List<Class<?>> getAllInterfaces(Class<?> cls) {
+        List<Class<?>> lst = new ArrayList<Class<?>>();
+
+        lst.addAll(Arrays.asList(cls.getInterfaces()));
 
         Class<?> s = cls.getSuperclass();
         if (s != null) {
-        	interfaces.addAll(getAllInterfaces(s));
+            lst.addAll(getAllInterfaces(s));
         }
 
-        return interfaces;
+        return lst;
     }
 }
