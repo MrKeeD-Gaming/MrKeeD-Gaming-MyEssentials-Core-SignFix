@@ -31,7 +31,7 @@ public class AE2PlaceTransformer implements IClassTransformer {
         boolean patched = false;
 
         protected AE2PlaceGeneratorAdapter(MethodVisitor mv, int access, String name, String desc) {
-            super(Opcodes.ASM4, mv, access, name, desc);
+            super(Opcodes.ASM5, mv, access, name, desc);
         }
 
         @Override
@@ -63,9 +63,9 @@ public class AE2PlaceTransformer implements IClassTransformer {
     public byte[] transform(String name, String srgName, byte[] bytes) {
         if("appeng.core.sync.packets.PacketPartPlacement".equals(srgName)) {
             ClassReader reader = new ClassReader(bytes);
-            ClassWriter writer = new ClassWriter(reader, Opcodes.ASM4);
+            ClassWriter writer = new ClassWriter(reader, Opcodes.ASM5);
 
-            ClassVisitor visitor = new ClassVisitor(Opcodes.ASM4, writer) {
+            ClassVisitor visitor = new ClassVisitor(Opcodes.ASM5, writer) {
                 @Override
                 public MethodVisitor visitMethod(int access, String name, String desc, String signature, String[] exceptions) {
                     MethodVisitor methodVisitor = super.visitMethod(access, name, desc, signature, exceptions);
