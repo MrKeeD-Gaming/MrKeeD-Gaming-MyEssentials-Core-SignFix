@@ -1,19 +1,27 @@
 buildscript {
     repositories {
-	mavenCentral()
+        mavenCentral()
         maven {
-            name = "forge"
-            url = "http://files.minecraftforge.net/maven"
+            name = "gt"
+            url = "https://gregtech.overminddl1.com/"
         }
-	maven {
-	    name = "sonatype"
-	    url = "https://oss.sonatype.org/content/repositories/snapshots/"
-	}
+        maven {
+            name = "sonatype"
+            url = "https://oss.sonatype.org/content/repositories/snapshots/"
+        }
+        maven {
+            name = "jitpack.io"
+            url = "https://jitpack.io"
+        }
     }
     dependencies {
-        classpath 'net.minecraftforge.gradle:ForgeGradle:1.2-SNAPSHOT'
+        classpath 'com.github.GTNH2:ForgeGradle:FG_1.2-SNAPSHOT'
     }
 }
+
+apply plugin: 'forge'
+apply plugin: 'idea'
+apply plugin: 'java'
 
 repositories {
     maven {
@@ -26,7 +34,7 @@ repositories {
     }
     maven {
         name = "sk89q"
-        url = "http://maven.sk89q.com/artifactory/repo/"
+        url = "https://maven.sk89q.com/artifactory/repo/"
     }
 }
 
@@ -43,13 +51,10 @@ if (System.env.TRAVIS_TAG != null && !System.env.TRAVIS_TAG.isEmpty()) {
     ext.config.build_number = System.env.TRAVIS_TAG.substring(0, System.env.TRAVIS_TAG.length()-1)
     ext.config.build_type = System.env.TRAVIS_TAG.substring(System.env.TRAVIS_TAG.length()-1)
 } else {
-    ext.config.build_number = "1.5"
-    ext.config.build_type = "r"
+    ext.config.build_number = "1.20"
+    ext.config.build_type = "GTNH"
 }
 
-// Apply Plugins
-apply plugin: "curseforge"
-apply plugin: "forge"
 
 // Configure Everything
 version = "${config.minecraft_version}-${config.build_number}${config.build_type}"
@@ -64,8 +69,8 @@ minecraft {
 
 // Setup Deps
 dependencies {
-    testCompile "junit:junit:4.11"
-    testCompile project(":MyEssentials-TestSuite")    
+//    testCompile "junit:junit:4.11"
+//    testCompile project(":MyEssentials-TestSuite")
 
     // Database engines
     compile "org.xerial:sqlite-jdbc:3.8.5-pre1"
@@ -93,17 +98,15 @@ processResources {
         include '*.info'
         expand 'mod_version': project.version, 'minecraft_version': project.minecraft.version, 'reflectasm_version': config.reflectasm_version
     }
-    //from(sourceSets.main.resources.srcDirs) {
-    //    exclude '*.info'
-    //}
 }
 
 // Tests
-task testSuite(type: Test) {
-    include '**/MECTestSuite.class'
-    reports.junitXml.destination = "$buildDir/test-results/suite"
-    reports.html.destination = "$buildDir/test-results/suit"
-}
+//task testSuite(type: Test) {
+//    include '**/MECTestSuite.class'
+//    reports.junitXml.destination = "$buildDir/test-results/suite"
+//    reports.html.destination = "$buildDir/test-results/suit"
+//}
+
 
 // Modify jar. Generate custom manifest
 jar {
@@ -114,12 +117,4 @@ jar {
             'FMLCorePluginContainsFMLMod': 'true'
         )
     }
-}
-
-// Setup Curse Upload task
-curse {
-    apiKey = System.env.CURSEFORGEKEY
-    projectId = config.project_id
-    changelog = "" // TODO Add changelog support
-    releaseType = config.build_type.equals('a') ? "alpha" : (config.build_type.equals('b') ? "beta" : "release")
 }
