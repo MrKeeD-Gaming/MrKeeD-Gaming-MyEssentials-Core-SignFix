@@ -77,8 +77,6 @@ public class AE2PlaceTransformer implements IClassTransformer {
                 }
             };
 
-            reader.accept(visitor, ClassReader.EXPAND_FRAMES);
-
             bytes = writer.toByteArray();
         }
 
