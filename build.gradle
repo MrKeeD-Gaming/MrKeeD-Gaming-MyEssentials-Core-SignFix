@@ -1,28 +1,40 @@
 buildscript {
     repositories {
-	mavenCentral()
+        mavenCentral()
         maven {
-            name = "forge"
-            url = "http://files.minecraftforge.net/maven"
+            name = "gt"
+            url = "https://gregtech.overminddl1.com/"
         }
-	maven {
-	    name = "sonatype"
-	    url = "https://oss.sonatype.org/content/repositories/snapshots/"
-	}
+        maven {
+            name = "sonatype"
+            url = "https://oss.sonatype.org/content/repositories/snapshots/"
+        }
+        maven {
+            name = "jitpack.io"
+            url = "https://jitpack.io"
+        }
     }
     dependencies {
-        classpath 'net.minecraftforge.gradle:ForgeGradle:1.2-SNAPSHOT'
+        classpath 'com.github.GTNH2:ForgeGradle:FG_1.2-SNAPSHOT'
     }
 }
 
+apply plugin: 'forge'
+apply plugin: 'idea'
+apply plugin: 'java'
+
 repositories {
+    maven {
+        name = "bukkit-repo"
+        url = "http://repo.bukkit.org/content/groups/public/"
+    }
     maven {
         name = "SpongePowered"
         url = "https://repo.spongepowered.org/maven"
     }
     maven {
         name = "sk89q"
-        url = "http://maven.sk89q.com/artifactory/repo/"
+        url = "https://maven.sk89q.com/artifactory/repo/"
     }
 }
 
@@ -35,11 +47,14 @@ ext.configFile.withReader {
     ext.config = new ConfigSlurper().parse prop
 }
 
-ext.config.build_number = config.core_build_version
-ext.config.build_type = config.core_build_type
+if (System.env.TRAVIS_TAG != null && !System.env.TRAVIS_TAG.isEmpty()) {
+    ext.config.build_number = System.env.TRAVIS_TAG.substring(0, System.env.TRAVIS_TAG.length()-1)
+    ext.config.build_type = System.env.TRAVIS_TAG.substring(System.env.TRAVIS_TAG.length()-1)
+} else {
+    ext.config.build_number = "1.20"
+    ext.config.build_type = "GTNH"
+}
 
-// Apply Plugins
-apply plugin: "forge"
 
 // Configure Everything
 version = "${config.minecraft_version}-${config.build_number}${config.build_type}"
@@ -54,6 +69,9 @@ minecraft {
 
 // Setup Deps
 dependencies {
+//    testCompile "junit:junit:4.11"
+//    testCompile project(":MyEssentials-TestSuite")
+
     // Database engines
     compile "org.xerial:sqlite-jdbc:3.8.5-pre1"
     compile "mysql:mysql-connector-java:5.1.32"
@@ -63,6 +81,7 @@ dependencies {
     compile files("libs/bukkit-1.7.9-R0.2.jar")
     compile "org.spongepowered:mixin:0.4.4-SNAPSHOT"
     compile "com.sk89q.worldedit:worldedit-forge-mc1.7.10:6.0.2-SNAPSHOT:dev"
+    //compile "info.servertools.permission:ServerTools-PERMISSION:1.7.10-2.2.1.14:deobf"
 
     // Other deps
     compile "org.beanshell:bsh:2.0b5"
@@ -79,11 +98,14 @@ processResources {
         include '*.info'
         expand 'mod_version': project.version, 'minecraft_version': project.minecraft.version, 'reflectasm_version': config.reflectasm_version
     }
-    //from(sourceSets.main.resources.srcDirs) {
-    //    exclude '*.info'
-    //}
 }
 
+// Tests
+//task testSuite(type: Test) {
+//    include '**/MECTestSuite.class'
+//    reports.junitXml.destination = "$buildDir/test-results/suite"
+//    reports.html.destination = "$buildDir/test-results/suit"
+//}
 
 
 // Modify jar. Generate custom manifest
@@ -96,5 +118,3 @@ jar {
         )
     }
 }
-
-
