@@ -85,7 +85,7 @@ dependencies {
 
     // Other deps
     compile "org.beanshell:bsh:2.0b5"
-    compile "com.esotericsoftware.reflectasm:reflectasm:${config.reflectasm_version}"
+    //compile "com.esotericsoftware.reflectasm:reflectasm:${config.reflectasm_version}"
 }
 
 // Process Resources, injecting version numbers in
