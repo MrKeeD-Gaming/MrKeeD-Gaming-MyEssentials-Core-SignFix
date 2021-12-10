@@ -12,7 +12,7 @@ import myessentials.localization.api.LocalManager;
 import net.minecraftforge.common.MinecraftForge;
 import org.apache.logging.log4j.Logger;
 
-@Mod(modid = "MyEssentials-Core", name = "MyEssentials-Core", version = "@VERSION@", dependencies = "required-after:Forge", acceptableRemoteVersions = "*")
+@Mod(modid = "MyEssentials-Core", name = "MyEssentials-Core", version = "GRADLETOKEN_VERSION", dependencies = "required-after:Forge", acceptableRemoteVersions = "*")
 public class MyEssentialsCore {
     @Instance("MyEssentials-Core")
     public static MyEssentialsCore instance;

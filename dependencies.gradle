@@ -1,0 +1,12 @@
+// Add your dependencies here
+
+dependencies {
+    compile("org.xerial:sqlite-jdbc:3.8.5-pre1")
+    compile("mysql:mysql-connector-java:5.1.32")
+
+    compileOnly("curse.maven:forge-essentials-74735:3338567") {
+        transitive = false
+    }
+
+    compileOnly files("dependencies/bukkit-1.7.9-R0.2.jar")
+}
