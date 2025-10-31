@@ -65,47 +65,48 @@ public class SignClassTransformer implements IClassTransformer {
      *
      * @param sign A instance of {@link net.minecraft.tileentity.TileEntitySign}. It's an {@link Object} arg to simplify
      *             the ASM code generation.
-     * @return The cached field
+     * @return The cached field, or null if not found
      * @throws RuntimeException if the transformer failed
      */
     private static Field getMyEssentialsDataField(Object sign) {
-        if (myEssentialsDataField == null) try {
-            myEssentialsDataField = sign.getClass().getField(FIELD_NAME);
-        } catch (NoSuchFieldException e) {
-            throw new RuntimeException(e);
+        if (myEssentialsDataField == null) {
+            try {
+                myEssentialsDataField = sign.getClass().getField(FIELD_NAME);
+            } catch (NoSuchFieldException e) {
+                System.err.println(
+                        "MyEssentials: Field 'myEssentials' not found on TileEntitySign. Transformer may have failed. Sign data will be skipped.");
+                myEssentialsDataField = null;
+                // Log the error and set to null to prevent retries
+            }
         }
-
         return myEssentialsDataField;
     }
 
     /**
-     * Read the custom field stored in a patched {@link net.minecraft.tileentity.TileEntitySign}.
-     *
-     * @param sign A instance of {@link net.minecraft.tileentity.TileEntitySign}. It's an {@link Object} arg to simplify
-     *             the ASM code generation.
-     * @return The custom data.
+     * Read the custom field stored in a patched TileEntitySign.
      */
     @Nullable
     public static NBTTagCompound getMyEssentialsDataValue(Object sign) {
+        Field field = getMyEssentialsDataField(sign);
+        if (field == null) return null; // Skip if field is missing
         try {
-            return (NBTTagCompound) getMyEssentialsDataField(sign).get(sign);
+            return (NBTTagCompound) field.get(sign);
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            System.err.println("MyEssentials: Error accessing sign data: " + e.getMessage());
+            return null;
         }
     }
 
     /**
      * Store the data to the custom field.
-     *
-     * @param sign    A instance of {@link net.minecraft.tileentity.TileEntitySign}. It's an {@link Object} arg to
-     *                simplify the ASM code generation.
-     * @param modData The custom data.
      */
     public static void setMyEssentialsDataValue(Object sign, @Nullable NBTTagCompound modData) {
+        Field field = getMyEssentialsDataField(sign);
+        if (field == null) return; // Skip if field is missing
         try {
-            getMyEssentialsDataField(sign).set(sign, modData);
+            field.set(sign, modData);
         } catch (IllegalAccessException e) {
-            throw new RuntimeException(e);
+            System.err.println("MyEssentials: Error setting sign data: " + e.getMessage());
         }
     }
 
@@ -142,7 +143,7 @@ public class SignClassTransformer implements IClassTransformer {
      * Adds an static invocation to a method on this class, the local method must return {@code void} and accept the
      * arguments {@link Object} and {@link NBTTagCompound}
      */
-    private class SignGeneratorAdapter extends GeneratorAdapter {
+    private static class SignGeneratorAdapter extends GeneratorAdapter {
 
         /**
          * The name of a method in {@link SignClassTransformer}.
