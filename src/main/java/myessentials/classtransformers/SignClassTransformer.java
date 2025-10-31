@@ -73,11 +73,8 @@ public class SignClassTransformer implements IClassTransformer {
             try {
                 myEssentialsDataField = sign.getClass().getField(FIELD_NAME);
             } catch (NoSuchFieldException e) {
-                System.err.println(
-                        "MyEssentials: Field 'myEssentials' not found on TileEntitySign. Transformer may have failed. Sign data will be skipped.");
                 myEssentialsDataField = null;
-                // Log the error and set to null to prevent retries
-            }
+            } // Set to null to prevent retries
         }
         return myEssentialsDataField;
     }
@@ -92,7 +89,6 @@ public class SignClassTransformer implements IClassTransformer {
         try {
             return (NBTTagCompound) field.get(sign);
         } catch (Exception e) {
-            System.err.println("MyEssentials: Error accessing sign data: " + e.getMessage());
             return null;
         }
     }
@@ -105,9 +101,7 @@ public class SignClassTransformer implements IClassTransformer {
         if (field == null) return; // Skip if field is missing
         try {
             field.set(sign, modData);
-        } catch (IllegalAccessException e) {
-            System.err.println("MyEssentials: Error setting sign data: " + e.getMessage());
-        }
+        } catch (IllegalAccessException e) {}
     }
 
     // ------- CORE-MOD PART ------- //
