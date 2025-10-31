@@ -1,10 +1,10 @@
 // Add your dependencies here
 
 dependencies {
-    compile('org.xerial:sqlite-jdbc:3.8.9.1')
-    compile('mysql:mysql-connector-java:8.0.33')
+    api('org.xerial:sqlite-jdbc:3.8.9.1')
+    api('mysql:mysql-connector-java:8.0.33')
 
-    compileOnly(rfg.deobf('maven.modrinth:forge-essentials:7.5.1')) {transitive = false}
+    compileOnlyApi(rfg.deobf('maven.modrinth:forge-essentials:7.5.1')) {transitive = false}
 
-    compileOnly('org.bukkit:bukkit:1.7.9-R0.2')
+    compileOnlyApi('org.bukkit:bukkit:1.7.9-R0.2')
 }
